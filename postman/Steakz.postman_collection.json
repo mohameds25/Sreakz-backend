@@ -1,0 +1,1553 @@
+{
+  "info": {
+    "name": "Steakz MIS API Endpoints",
+    "description": "Professional Postman collection for the Steakz MIS Lab Demonstration workspace. Covers authentication, branch isolation, CRUD operations, orders, bookings, inventory, sales, reports, and role access tests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "token",
+      "value": "paste_login_token_here"
+    },
+    {
+      "key": "adminToken",
+      "value": "paste_admin_token_here"
+    },
+    {
+      "key": "managerToken",
+      "value": "paste_manager_token_here"
+    },
+    {
+      "key": "chefToken",
+      "value": "paste_chef_token_here"
+    },
+    {
+      "key": "cashierToken",
+      "value": "paste_cashier_token_here"
+    },
+    {
+      "key": "customerToken",
+      "value": "paste_customer_token_here"
+    },
+    {
+      "key": "branchId",
+      "value": ""
+    },
+    {
+      "key": "londonBranchId",
+      "value": ""
+    },
+    {
+      "key": "manchesterBranchId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "inventoryId",
+      "value": ""
+    },
+    {
+      "key": "orderId",
+      "value": ""
+    },
+    {
+      "key": "otherBranchOrderId",
+      "value": ""
+    },
+    {
+      "key": "bookingId",
+      "value": ""
+    },
+    {
+      "key": "saleId",
+      "value": ""
+    },
+    {
+      "key": "shiftId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API is running\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"adminToken\", body.token);",
+                  "pm.collectionVariables.set(\"adminToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Headquarter Manager",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"country@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Branch Manager",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"manager.london@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"managerToken\", body.token);",
+                  "pm.collectionVariables.set(\"managerToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Chef",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"chef.london@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"chefToken\", body.token);",
+                  "pm.collectionVariables.set(\"chefToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Cashier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cashier.london@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"cashierToken\", body.token);",
+                  "pm.collectionVariables.set(\"cashierToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Lab Customer\",\n  \"email\": \"postman.lab.customer@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"customerToken\", body.token);",
+                  "pm.collectionVariables.set(\"customerToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman.lab.customer@steakz.test\",\n  \"password\": \"123456\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login succeeded\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.environment.set(\"customerToken\", body.token);",
+                  "pm.collectionVariables.set(\"customerToken\", body.token);",
+                  "pm.environment.set(\"token\", body.token);",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "List Branches",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/branches"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Branches returned\", function () { pm.response.to.be.success; });",
+                  "const branches = pm.response.json();",
+                  "for (const branch of branches) {",
+                  "  const key = branch.city.toLowerCase().replace(/[^a-z0-9]/g, \"\");",
+                  "  pm.environment.set(`${key}BranchId`, branch.id);",
+                  "  pm.collectionVariables.set(`${key}BranchId`, branch.id);",
+                  "}",
+                  "const london = branches.find((branch) => branch.city === \"London\") || branches[0];",
+                  "if (london) { pm.environment.set(\"branchId\", london.id); pm.collectionVariables.set(\"branchId\", london.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Branch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/branches",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steakz Oxford Lab\",\n  \"city\": \"Oxford\",\n  \"address\": \"10 High Street, Oxford\",\n  \"phone\": \"+44 1865 000 0606\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Branch created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"branchId\", selected.id); pm.collectionVariables.set(\"branchId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Branch",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/branches/{{branchId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Steakz Oxford Lab Updated\",\n  \"city\": \"Oxford\",\n  \"address\": \"12 High Street, Oxford\",\n  \"phone\": \"+44 1865 000 0607\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Branch updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Branch",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/branches/{{branchId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Branch deleted\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users and Roles",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Users returned\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"userId\", selected.id); pm.collectionVariables.set(\"userId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Waiter\",\n  \"email\": \"postman.waiter@steakz.test\",\n  \"password\": \"123456\",\n  \"role\": \"WAITER\",\n  \"branchId\": \"{{londonBranchId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"userId\", selected.id); pm.collectionVariables.set(\"userId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users/{{userId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Postman Waiter Updated\",\n  \"role\": \"WAITER\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users/{{userId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"User deleted\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "List Inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventory returned\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"inventoryId\", selected.id); pm.collectionVariables.set(\"inventoryId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Inventory Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{londonBranchId}}\",\n  \"name\": \"Ribeye Steak Stock\",\n  \"category\": \"Meat\",\n  \"quantity\": 25,\n  \"unit\": \"portions\",\n  \"reorderLevel\": 10,\n  \"supplier\": \"London Prime Butchers\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventory item created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"inventoryId\", selected.id); pm.collectionVariables.set(\"inventoryId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Inventory Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory/{{inventoryId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 30,\n  \"reorderLevel\": 8\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventory item updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Use Stock",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{chefToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory/{{inventoryId}}/use",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 2\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Stock used\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add Stock",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory/{{inventoryId}}/refill",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 10\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Stock added\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Inventory Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory/{{inventoryId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventory item deleted\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Orders and Sales",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Orders returned\", function () { pm.response.to.be.success; });",
+                  "const orders = pm.response.json();",
+                  "const records = Array.isArray(orders) ? orders : [orders];",
+                  "const first = records[0];",
+                  "if (first?.id) { pm.environment.set(\"orderId\", first.id); pm.collectionVariables.set(\"orderId\", first.id); }",
+                  "const nonLondon = records.find((order) => order.branch && order.branch.city !== \"London\");",
+                  "if (nonLondon?.id) { pm.environment.set(\"otherBranchOrderId\", nonLondon.id); pm.collectionVariables.set(\"otherBranchOrderId\", nonLondon.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Walk-in Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cashierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{londonBranchId}}\",\n  \"tableNumber\": 4,\n  \"customerName\": \"Walk-in Customer - 2x Signature Ribeye\",\n  \"total\": 96,\n  \"items\": [\n    {\n      \"name\": \"Signature Ribeye\",\n      \"quantity\": 2,\n      \"unitPrice\": 48\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Walk-in order created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"orderId\", selected.id); pm.collectionVariables.set(\"orderId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{londonBranchId}}\",\n  \"customerName\": \"Postman Lab Customer - 1x Steakz Burger\",\n  \"total\": 29,\n  \"items\": [\n    {\n      \"name\": \"Steakz Burger\",\n      \"quantity\": 1,\n      \"unitPrice\": 29\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Customer order created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"orderId\", selected.id); pm.collectionVariables.set(\"orderId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Single Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/{{orderId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Single order returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Order Details",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/{{orderId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"Edited Lab Customer - 1x Filet Tenderloin\",\n  \"total\": 56,\n  \"items\": [\n    {\n      \"name\": \"Filet Tenderloin\",\n      \"quantity\": 1,\n      \"unitPrice\": 56\n    }\n  ]\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Order details updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{chefToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/{{orderId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PREPARING\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Order status updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sales List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Sales returned\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"saleId\", selected.id); pm.collectionVariables.set(\"saleId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cashierToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{londonBranchId}}\",\n  \"orderId\": \"{{orderId}}\",\n  \"amount\": 96,\n  \"paymentMethod\": \"Card\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Sale created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"saleId\", selected.id); pm.collectionVariables.set(\"saleId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/{{orderId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Order deleted\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "List Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Bookings returned\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"bookingId\", selected.id); pm.collectionVariables.set(\"bookingId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{londonBranchId}}\",\n  \"reservationAt\": \"2026-06-20T19:00:00.000Z\",\n  \"guests\": 4,\n  \"notes\": \"Window table requested\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Booking created\", function () { pm.response.to.be.success; });",
+                  "const body = pm.response.json();",
+                  "const records = Array.isArray(body) ? body : [body];",
+                  "const selected = records[0];",
+                  "if (selected && selected.id) { pm.environment.set(\"bookingId\", selected.id); pm.collectionVariables.set(\"bookingId\", selected.id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guests\": 5,\n  \"notes\": \"Updated party size\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Booking updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Booking Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Booking status updated\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/bookings/{{bookingId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Booking deleted\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Dashboard Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/reports/dashboard"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Dashboard report returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Branch Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/reports/branches"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Branch report returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sales Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/reports/sales"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Sales report returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Inventory Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/reports/inventory"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Inventory report returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Low Stock Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/reports/low-stock"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Low stock report returned\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Role Access Tests",
+      "item": [
+        {
+          "name": "Admin can access all orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders?summary=true&limit=10"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Admin can see orders\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "London Branch Manager can access own branch orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders?summary=true&limit=10"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Manager can see own branch orders\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "London Chef can access own branch inventory",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{chefToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory?summary=true&limit=10"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Chef can see own branch inventory\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "London Cashier can access own branch sales",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{cashierToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/sales"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Cashier can see own branch sales\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer can access own orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders?summary=true&limit=10"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Customer can see own orders\", function () { pm.response.to.be.success; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Branch Manager cannot access another branch order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/orders/{{otherBranchOrderId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Access is blocked\", function () {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Chef cannot create inventory in another branch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{chefToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/inventory",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"branchId\": \"{{manchesterBranchId}}\",\n  \"name\": \"Blocked Stock Test\",\n  \"category\": \"Meat\",\n  \"quantity\": 5,\n  \"unit\": \"portions\",\n  \"reorderLevel\": 2,\n  \"supplier\": \"Blocked Supplier\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Access is blocked\", function () {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Customer cannot access users list",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customerToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/api/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Access is blocked\", function () {",
+                  "  pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

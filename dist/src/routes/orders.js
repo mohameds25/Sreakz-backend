@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.orderRouter = void 0;
+const client_1 = require("@prisma/client");
+const express_1 = require("express");
+const order_controller_1 = require("../controllers/order.controller");
+const access_1 = require("../middleware/access");
+const asyncHandler_1 = require("../middleware/asyncHandler");
+const auth_1 = require("../middleware/auth");
+exports.orderRouter = (0, express_1.Router)();
+exports.orderRouter.use(auth_1.authenticate);
+exports.orderRouter.get("/", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.WAITER, client_1.Role.CASHIER, client_1.Role.ADMIN, client_1.Role.CUSTOMER), (0, asyncHandler_1.asyncHandler)(order_controller_1.listOrders));
+exports.orderRouter.get("/:id", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.WAITER, client_1.Role.CASHIER, client_1.Role.ADMIN, client_1.Role.CUSTOMER), (0, asyncHandler_1.asyncHandler)(order_controller_1.getOrder));
+exports.orderRouter.post("/", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.WAITER, client_1.Role.CASHIER, client_1.Role.ADMIN, client_1.Role.CUSTOMER), (0, asyncHandler_1.asyncHandler)(order_controller_1.createOrder));
+exports.orderRouter.put("/:id", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.WAITER, client_1.Role.CASHIER, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(order_controller_1.updateOrder));
+exports.orderRouter.put("/:id/status", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.WAITER, client_1.Role.CASHIER, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(order_controller_1.updateOrderStatus));
+exports.orderRouter.delete("/:id", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(order_controller_1.deleteOrder));

@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  HEADQUARTER_MANAGER
+  BRANCH_MANAGER
+  CHEF
+  WAITER
+  CASHIER
+  ADMIN
+  CUSTOMER
+}
+
+enum OrderStatus {
+  NEW
+  PREPARING
+  READY
+  SERVED
+  CANCELLED
+}
+
+enum SaleStatus {
+  PAID
+  REFUNDED
+}
+
+enum ShiftStatus {
+  SCHEDULED
+  ACTIVE
+  COMPLETED
+}
+
+enum BookingStatus {
+  REQUESTED
+  CONFIRMED
+  CANCELLED
+}
+
+model Branch {
+  id          String          @id @default(cuid())
+  name        String
+  city        String
+  address     String
+  phone       String
+  createdAt   DateTime        @default(now())
+  users       User[]
+  inventory   InventoryItem[]
+  orders      Order[]
+  sales       Sale[]
+  shifts      Shift[]
+  bookings    TableBooking[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  branchId     String?
+  createdAt    DateTime @default(now())
+  branch       Branch?  @relation(fields: [branchId], references: [id])
+  shifts       Shift[]
+  sales        Sale[]   @relation("CashierSales")
+  orders       Order[]  @relation("CreatedOrders")
+  bookings     TableBooking[] @relation("CustomerBookings")
+}
+
+model InventoryItem {
+  id              String   @id @default(cuid())
+  branchId        String
+  name            String
+  category        String
+  quantity        Decimal
+  unit            String
+  reorderLevel    Decimal
+  supplier        String
+  updatedAt       DateTime @updatedAt
+  branch          Branch   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  branchId    String
+  createdById String
+  tableNumber Int?
+  customerName String?
+  status      OrderStatus @default(NEW)
+  total       Decimal
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  branch      Branch      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation("CreatedOrders", fields: [createdById], references: [id])
+  items       OrderItem[]
+  sale        Sale?
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  name      String
+  quantity  Int
+  unitPrice Decimal
+  lineTotal Decimal
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Sale {
+  id         String     @id @default(cuid())
+  branchId   String
+  orderId    String     @unique
+  cashierId  String
+  amount     Decimal
+  paymentMethod String
+  status     SaleStatus @default(PAID)
+  createdAt  DateTime   @default(now())
+  branch     Branch     @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  order      Order      @relation(fields: [orderId], references: [id])
+  cashier    User       @relation("CashierSales", fields: [cashierId], references: [id])
+}
+
+model Shift {
+  id        String      @id @default(cuid())
+  branchId  String
+  userId    String
+  startsAt  DateTime
+  endsAt    DateTime
+  status    ShiftStatus @default(SCHEDULED)
+  branch    Branch      @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TableBooking {
+  id            String        @id @default(cuid())
+  branchId      String
+  customerId    String
+  customerName  String
+  reservationAt DateTime
+  guests        Int
+  notes         String?
+  status        BookingStatus @default(REQUESTED)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  branch        Branch        @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  customer      User          @relation("CustomerBookings", fields: [customerId], references: [id], onDelete: Cascade)
+}

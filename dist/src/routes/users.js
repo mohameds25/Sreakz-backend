@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
+const client_1 = require("@prisma/client");
+const express_1 = require("express");
+const user_controller_1 = require("../controllers/user.controller");
+const access_1 = require("../middleware/access");
+const asyncHandler_1 = require("../middleware/asyncHandler");
+const auth_1 = require("../middleware/auth");
+exports.userRouter = (0, express_1.Router)();
+exports.userRouter.use(auth_1.authenticate);
+exports.userRouter.get("/", (0, access_1.requireRoles)(client_1.Role.ADMIN, client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER), (0, asyncHandler_1.asyncHandler)(user_controller_1.listUsers));
+exports.userRouter.post("/", (0, access_1.requireRoles)(client_1.Role.ADMIN, client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER), (0, asyncHandler_1.asyncHandler)(user_controller_1.createUser));
+exports.userRouter.put("/:id", (0, access_1.requireRoles)(client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(user_controller_1.updateUser));
+exports.userRouter.delete("/:id", (0, access_1.requireRoles)(client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(user_controller_1.deleteUser));

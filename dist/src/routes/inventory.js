@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.inventoryRouter = void 0;
+const client_1 = require("@prisma/client");
+const express_1 = require("express");
+const inventory_controller_1 = require("../controllers/inventory.controller");
+const access_1 = require("../middleware/access");
+const asyncHandler_1 = require("../middleware/asyncHandler");
+const auth_1 = require("../middleware/auth");
+exports.inventoryRouter = (0, express_1.Router)();
+exports.inventoryRouter.use(auth_1.authenticate);
+exports.inventoryRouter.get("/", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(inventory_controller_1.listInventory));
+exports.inventoryRouter.post("/", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.ADMIN), access_1.requireBranchScope, (0, asyncHandler_1.asyncHandler)(inventory_controller_1.createInventoryItem));
+exports.inventoryRouter.put("/:id", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(inventory_controller_1.updateInventoryItem));
+exports.inventoryRouter.put("/:id/use", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.CHEF, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(inventory_controller_1.useInventoryItem));
+exports.inventoryRouter.put("/:id/refill", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(inventory_controller_1.refillInventoryItem));
+exports.inventoryRouter.delete("/:id", (0, access_1.requireRoles)(client_1.Role.HEADQUARTER_MANAGER, client_1.Role.BRANCH_MANAGER, client_1.Role.ADMIN), (0, asyncHandler_1.asyncHandler)(inventory_controller_1.deleteInventoryItem));
